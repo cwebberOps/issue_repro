@@ -1,0 +1,28 @@
+---
+driver:
+  name: vagrant
+
+platforms:
+- name: ubuntu-14.04
+
+suites:
+
+- name: current
+  run_list:
+    - recipe[issue_repro]
+  attributes: {}
+  provisioner:
+    name: chef_zero
+    require_chef_omnibus: 12.3.0
+
+
+- name: rc
+  run_list:
+    - recipe[issue_repro]
+  attributes: {}
+  provisioner:
+    name: chef_github
+    github_owner: "chef"
+    github_repo: "chef"
+    refname: '12.4.0.rc.0'
+

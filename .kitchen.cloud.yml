@@ -1,0 +1,39 @@
+<% require 'kitchen-sync' %>
+---
+driver_config:
+  aws_access_key_id: <%= ENV['AWS_ACCESS_KEY_ID'] %>
+  aws_secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
+  aws_ssh_key_id: <%= ENV['AWS_KEYPAIR_NAME'] %>
+  availability_zone: <%= ENV['AWS_AVAILABILITY_ZONE'] %>
+
+platforms:
+- name: ubuntu-14.10
+  driver_plugin: ec2
+  driver_config:
+    username: ubuntu
+    image_id: <%= ENV['AWS_AMI_UBUNTU_1410_HVM'] %>
+    flavor_id: t2.micro
+  run_list:
+    - recipe[apt]
+
+suites:
+
+- name: current
+  run_list:
+    - recipe[issue_repro]
+  attributes: {}
+  provisioner:
+    name: chef_zero
+    require_chef_omnibus: 12.3.0
+
+
+- name: rc
+  run_list:
+    - recipe[issue_repro]
+  attributes: {}
+  provisioner:
+    name: chef_github
+    github_owner: "chef"
+    github_repo: "chef"
+    refname: '12.4.0.rc.0'
+
